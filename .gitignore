@@ -21,6 +21,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 **/.xcode.env.local
+ios/Podfile.lock
 
 # Android/IntelliJ
 #
@@ -73,3 +74,29 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Env files
+.env
+.env.*
+
+# Watchman
+.watchmanconfig
+
+# VSCode
+.vscode/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Metro
+metro-cache/
+
+*.tmp
+*.log
+npm-debug.log*
+.externalNativeBuild/
+ios/*.xcworkspace
+*.apk
+*.aab
+
