@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getStyles } from './App.styles';
 import { useThemeContext } from './context/ThemeContext';
 import {
@@ -6,11 +6,13 @@ import {
   PermissionsAndroid,
   Platform,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import BottomListModal from './components/BottomListModal/BottomListModal';
+import SearchBar from './components/searchBar/searchBar';
 
 type LatLng = {
   latitude: number;
@@ -117,6 +119,18 @@ export default function App() {
               <Marker coordinate={userLocation} title="Vous êtes ici" />
             )}
           </MapView>
+
+          <View style={styles.logoAndSearchBar}>
+            <Image
+              source={
+                isDark
+                  ? require('./assets/images/logo/iconwhitered.png')
+                  : require('./assets/images/logo/iconblackred.png')
+              }
+              style={styles.topLogo}
+            />
+            <SearchBar />
+          </View>
 
           <BottomListModal
             visible={isModalVisible}
