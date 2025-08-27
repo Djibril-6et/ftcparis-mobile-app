@@ -60,11 +60,7 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
             <View style={styles.filterItem}/>
             <View style={styles.filterItem}/>
           </View>
-          <ScrollView style={styles.scrollView}>
-            {events && events.map(event => 
-              <EventCard title={event.title} key={event.title} />
-            )}
-          </ScrollView>
+          {/* Add ScrollView here */}
         </View>
       </Modal>
     </>
