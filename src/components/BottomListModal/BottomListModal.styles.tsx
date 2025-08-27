@@ -13,24 +13,37 @@ export const getStyles = (isDarkTheme: boolean) =>
             padding: 20,
             borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
-            minHeight: '75%',
+            height: '75%',
+            display: 'flex',
+            width: '100%',
         },
 
         handle: {
-            width: 80,
+            width: 100,
             height: 5,
             backgroundColor: '#616161',
             borderRadius: 3,
             alignSelf: 'center',
+        },
+
+        titleWrapper: {
+            width: '100%',
+            height: 22,
             marginBottom: 15,
+            marginTop: 15,
+            overflow: 'hidden',
         },
 
         title: {
+            maxWidth: '100%',
+            maxHeight: '100%',
             color: isDarkTheme ? '#fff' : '#000',
-            fontSize: 18,
+            fontFamily: 'ArchivoBlack-Regular',
+            fontSize: 20,
             fontWeight: 'bold',
             textAlign: 'center',
             textTransform: 'uppercase',
+            letterSpacing: 4,
         },
 
         previewButton: {
@@ -50,5 +63,28 @@ export const getStyles = (isDarkTheme: boolean) =>
             color: isDarkTheme ? '#fff' : '#000',
             fontWeight: 'bold',
             fontSize: 16,
+        },
+
+        filterContainer: {
+            width: '90%',
+            height: 40,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignSelf: 'center',
+            marginBottom: 20,
+        },
+
+        filterItem: {
+            display: 'flex',
+            backgroundColor: isDarkTheme ? '#f5f5f5' : '#1a1a1a',
+            height: '100%',
+            width: '30%',
+            borderRadius: 15,
+        },
+
+        scrollView: {
+            display: 'flex',
+            width: '100%',
         },
     });
