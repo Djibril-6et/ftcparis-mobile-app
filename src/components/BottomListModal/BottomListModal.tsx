@@ -5,6 +5,8 @@ import { View, Text, Pressable, ScrollView } from 'react-native';
 import Modal from 'react-native-modal';
 import EventCard from '../EventCard/EventCard';
 
+import eventsData from '../../assets/localData/eventlist.json';
+
 type Props = {
   visible: boolean;
   onOpen: () => void;
@@ -15,19 +17,8 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
   const { isDark } = useThemeContext();
   const styles = getStyles(isDark);
 
-  const events = [
-    { title: "Conférence Tech 2025" },
-    { title: "Atelier React Native" },
-    { title: "Hackathon Étudiant" },
-    { title: "Webinar : UX Design" },
-    { title: "Networking Startup" },
-    { title: "Salon de l’Innovation" },
-    { title: "Coding Challenge Paris" },
-    { title: "Masterclass en Cybersécurité" },
-    { title: "Festival Digital Nomad" },
-    { title: "Conférence sur l’IA Responsable" }
-  ];
-  
+  const events = eventsData;
+
   return (
     <>
       {/* Modal preview button when it's closed */}
@@ -62,7 +53,7 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
           </View>
           <ScrollView style={styles.scrollView}>
             {events && events.map(event => 
-              <EventCard title={event.title} key={event.title} />
+              <EventCard event={event} key={event.title} />
             )}
           </ScrollView>
         </View>

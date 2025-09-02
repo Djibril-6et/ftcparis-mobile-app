@@ -36,4 +36,35 @@ export const getStyles = (isDarkTheme: boolean) =>
       resizeMode: 'contain', 
       marginBottom: 20,
     },
+
+    searchbarAndAccountWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+    },
+
+    accountIconWrapper: {
+      width: '15%',
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
+      borderColor: isDarkTheme ? '#f5f5f5' : '#1a1a1a',
+      borderWidth: 0.5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+
+    accountIconTouchable: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+
+    accountIcon: {
+      width: '80%',
+      height: '60%',
+      resizeMode: 'contain',
+    },
   });

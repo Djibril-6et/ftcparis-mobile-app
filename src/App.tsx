@@ -7,12 +7,20 @@ import {
   Platform,
   ActivityIndicator,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import MapCluster from 'react-native-map-clustering';
 import Geolocation from 'react-native-geolocation-service';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import BottomListModal from './components/BottomListModal/BottomListModal';
 import SearchBar from './components/searchBar/searchBar';
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "./navigation/AppNavigator";
+
+// Import JSON des événements avec coordonnées
+import eventsData from './assets/localData/eventlist.json';
 
 type LatLng = {
   latitude: number;
@@ -23,7 +31,8 @@ export default function App() {
   const { isDark } = useThemeContext();
   const styles = getStyles(isDark);
 
-  // Default region for the map = Paris
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [region, setRegion] = useState({
     latitude: 48.8566,
     longitude: 2.3522,
@@ -33,8 +42,8 @@ export default function App() {
 
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [loading, setLoading] = useState(true);
-
   const [isModalVisible, setModalVisible] = useState(false);
+  const [events, setEvents] = useState(eventsData);
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -114,11 +123,31 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
-          <MapView style={styles.map} region={region}>
+          <MapCluster
+            style={styles.map}
+            region={region}
+            clusterColor="red"
+            clusterTextColor="white"
+          >
+            {/* User marker */}
             {userLocation && (
-              <Marker coordinate={userLocation} title="Vous êtes ici" />
+              <Marker
+                coordinate={userLocation}
+                title="Vous êtes ici"
+                pinColor="blue"
+              />
             )}
-          </MapView>
+
+            {/* Events markers */}
+            {events.map((event, index) => (
+              <Marker
+                key={index}
+                coordinate={{ latitude: event.latitude, longitude: event.longitude }}
+                title={event.title}
+                description={event.place}
+              />
+            ))}
+          </MapCluster>
 
           <View style={styles.logoAndSearchBar}>
             <Image
@@ -129,7 +158,21 @@ export default function App() {
               }
               style={styles.topLogo}
             />
-            <SearchBar />
+            <View style={styles.searchbarAndAccountWrapper}>
+              <SearchBar />
+              <View style={styles.accountIconWrapper}>
+                <TouchableOpacity style={styles.accountIconTouchable} onPress={() => navigation.navigate("Login")}>
+                  <Image
+                    source={
+                      isDark
+                        ? require("./assets/images/icons/profile-white.png")
+                        : require("./assets/images/icons/profile-black.png")
+                    }
+                    style={styles.accountIcon}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
 
           <BottomListModal

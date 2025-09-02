@@ -12,7 +12,7 @@ export const getStyles = (isDarkTheme: boolean) =>
       borderColor: isDarkTheme ? '#f5f5f5' : '#1a1a1a',
       paddingHorizontal: 10,
       paddingVertical: 5,
-      width: 300,
+      width: '80%',
       height: 40,
     },
 
