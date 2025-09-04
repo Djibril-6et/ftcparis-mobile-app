@@ -161,7 +161,7 @@ export default function App() {
             <View style={styles.searchbarAndAccountWrapper}>
               <SearchBar />
               <View style={styles.accountIconWrapper}>
-                <TouchableOpacity style={styles.accountIconTouchable} onPress={() => navigation.navigate("Login")}>
+                <TouchableOpacity style={styles.accountIconTouchable} onPress={() => navigation.navigate("Profile")}>
                   <Image
                     source={
                       isDark
