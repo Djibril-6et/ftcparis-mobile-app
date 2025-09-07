@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { getProfile, logout } from "../../services/Auth.services";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -16,11 +16,20 @@ export default function ProfileScreen() {
         const data = await getProfile();
         setUser(data);
       } catch (err: any) {
-        console.error(err);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Login" }],
-        });
+
+        Alert.alert(
+          "Alerte",
+          "Aucun profil connecté. Veuillez vous reconnecter.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                logout(navigation); // redirection vers Login et suppression du token
+              },
+            },
+          ],
+          { cancelable: false }
+        );
       } finally {
         setLoading(false);
       }
