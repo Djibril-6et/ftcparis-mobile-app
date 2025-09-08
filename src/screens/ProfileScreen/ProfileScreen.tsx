@@ -1,98 +1,88 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { getProfile, logout } from "../../services/Auth.services";
+import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
+import { getProfile, getToken } from "../../services/Auth.services";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../navigation/AppNavigator";
+import { useAuth } from "../../context/AuthContext";
+import { useThemeContext } from "../../context/ThemeContext";
+import { getStyles } from "./ProfileScreen.styles";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
+  const { isDark } = useThemeContext();
+  const styles = getStyles(isDark);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { logout: loginContext } = useAuth();
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        const token = await getToken();
+        if (!token) {
+          navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+          return;
+        }
+
         const data = await getProfile();
         setUser(data);
-      } catch (err: any) {
-
-        Alert.alert(
-          "Alerte",
-          "Aucun profil connecté. Veuillez vous reconnecter.",
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                logout(navigation); // redirection vers Login et suppression du token
-              },
-            },
-          ],
-          { cancelable: false }
-        );
+      } catch (err) {
+        navigation.reset({ index: 0, routes: [{ name: "Login" }] });
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [navigation]);
+  }, []);
 
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={isDark ? "#fff" : "#000"} />
       </View>
     );
   }
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.errorText}>Impossible de charger le profil.</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Profil</Text>
-      <Text>Email: {user.email}</Text>
-      <Text>Nom: {user.firstname} {user.lastname}</Text>
-      <Text>Username: {user.username}</Text>
-      <Text>Birthdate: {new Date(user.birthdate).toLocaleDateString()}</Text>
-      <Text>Role: {user.role}</Text>
+    <SafeAreaProvider style={{ backgroundColor: isDark ? "#121212" : "#fff" }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Profil</Text>
+          
+          <View style={styles.profileInfo}>
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.value}>{user.email}</Text>
+            
+            <Text style={styles.label}>Nom:</Text>
+            <Text style={styles.value}>{user.firstname} {user.lastname}</Text>
+            
+            <Text style={styles.label}>Nom d'utilisateur:</Text>
+            <Text style={styles.value}>{user.username}</Text>
+            
+            <Text style={styles.label}>Date de naissance:</Text>
+            <Text style={styles.value}>{new Date(user.birthdate).toLocaleDateString()}</Text>
+          </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => logout(navigation)}
-      >
-        <Text style={styles.buttonText}>Se déconnecter</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => loginContext()}
+          >
+            <Text style={styles.buttonText}>Se déconnecter</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  button: {
-    marginTop: 30,
-    backgroundColor: "#e63946",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});

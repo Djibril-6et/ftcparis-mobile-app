@@ -17,12 +17,15 @@ export async function getToken(): Promise<string | null> {
 }
 
 // Delete token
-async function clearToken() {
+export async function clearToken() {
   await Keychain.resetGenericPassword();
 }
 
 // ---- Login ----
 export async function login(email: string, password: string) {
+  console.log("📡 Tentative login vers :", `${API_URL}/auth/login`);
+  console.log("Payload :", { email, password });
+
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -30,7 +33,8 @@ export async function login(email: string, password: string) {
   });
 
   if (!res.ok) {
-    throw new Error("Identifiants invalides");
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Identifiants invalides");
   }
 
   const data = await res.json();
@@ -90,10 +94,9 @@ export async function getProfile() {
   return data;
 }
 
-// Delete token and logout user
+// ---- Logout ----
 export async function logout(navigation: any) {
-  await clearToken(); // supprime le token de Keychain
-  // redirection vers Login
+  await clearToken();
   navigation.reset({
     index: 0,
     routes: [{ name: "Login" }],
