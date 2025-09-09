@@ -6,6 +6,7 @@ import App from "../App";
 import ProfileScreen from "../screens/ProfileScreen/ProfileScreen";
 import LoginScreen from "../screens/LoginScreen/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen/RegisterScreen";
+import NewEventScreen from "../screens/NewEventScreen/NewEventScreen";
 
 // Définition du type pour les paramètres de navigation
 export type RootStackParamList = {
@@ -13,6 +14,7 @@ export type RootStackParamList = {
   Profile: undefined;
   Login: undefined;
   Register: undefined;
+  NewEvent: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,6 +33,7 @@ export default function AppNavigator() {
           <>
             <Stack.Screen name="Home" component={App} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="NewEvent" component={NewEventScreen} />
           </>
         ) : (
           <>

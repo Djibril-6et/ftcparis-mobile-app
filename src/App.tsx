@@ -18,6 +18,7 @@ import SearchBar from './components/searchBar/searchBar';
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "./navigation/AppNavigator";
+import { useAuth } from './context/AuthContext';
 
 // Import JSON des événements avec coordonnées
 import eventsData from './assets/localData/eventlist.json';
@@ -44,6 +45,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
   const [events, setEvents] = useState(eventsData);
+
+  const {user} = useAuth();
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {

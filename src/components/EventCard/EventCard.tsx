@@ -2,6 +2,7 @@ import React from 'react';
 import { getStyles } from "./EventCard.styles"
 import { useThemeContext } from '../../context/ThemeContext';
 import { View, Text, Image } from 'react-native';
+import Config from "react-native-config";
 
 type Props = {
   event: {
@@ -41,11 +42,10 @@ const EventCard = ({ event }: Props) => {
     return (
         <View style={styles.wrapper}>
             <View style={styles.imageWrapper}>
-                {/* <Image 
-                    source={{ uri: 'http://192.168.1.200:7474/api/images/0ab4076145d51528d3a492e6f0bc424a.jpg' }} 
+                <Image 
+                    source={{ uri: `${Config.API_URL}/images/${event.image}` }} 
                     style={styles.image} 
-                /> */}
-                <Text style={styles.image}>{event.image}</Text>
+                />
             </View>
             <View style={styles.contentWrapper}>
                 <Text style={styles.date}>{formatDate(event.datetime)}</Text>

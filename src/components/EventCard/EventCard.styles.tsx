@@ -24,10 +24,9 @@ export const getStyles = (isDarkTheme: boolean) =>
         },
 
         image: {
-            // width: '100%',
-            // height: '100%',
-            // resizeMode: 'cover',
-            alignItems: 'center',
+            width: '100%',
+            height: '100%',
+            resizeMode: 'cover',
         },
 
         contentWrapper: {

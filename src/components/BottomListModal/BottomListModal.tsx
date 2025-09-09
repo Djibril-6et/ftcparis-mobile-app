@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import { useThemeContext } from '../../context/ThemeContext';
 import { getStyles } from './BottomListModal.styles';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import EventCard from '../EventCard/EventCard';
-
-import eventsData from '../../assets/localData/eventlist.json';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "../../navigation/AppNavigator";
+import { getEvents } from '../../services/Event.services';
 
 type Props = {
   visible: boolean;
@@ -16,15 +19,36 @@ type Props = {
 const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
   const { isDark } = useThemeContext();
   const styles = getStyles(isDark);
+  const [events, setEvents] = React.useState<any[]>([]);
 
-  const events = eventsData;
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await getEvents();
+        console.log("Full response:", response);
+        // Si les données sont dans response._j
+        const eventsData = response._j || response;
+        setEvents(eventsData);
+      } catch (err) {
+        console.log("Error fetching events:", err);
+      }
+    };
+    
+    fetchEvents();
+  }, []);
+
+  const {user} = useAuth();
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  // const events = eventsData;
 
   return (
     <>
       {/* Modal preview button when it's closed */}
       {!visible && (
         <Pressable style={styles.previewButton} onPress={onOpen}>
-          <Text style={styles.previewButtonText}>Afficher la liste</Text>
+          <Text style={styles.previewButtonText}>Les événements</Text>
         </Pressable>
       )}
 
@@ -47,9 +71,17 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
             <Text style={styles.title}>Where are we going ?</Text>
           </View>
           <View style={styles.filterContainer}>
-            <View style={styles.filterItem}/>
-            <View style={styles.filterItem}/>
-            <View style={styles.filterItem}/>
+            {(user?.role === 'admin' || user?.role === 'eventholder') && (
+              <TouchableOpacity style={styles.filterItem} onPress={() => {
+                navigation.navigate("NewEvent")
+                onClose();
+              }}>
+                <Text style={styles.filterText}>+ Ajouter</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity style={styles.filterItem}>
+              <Text style={styles.filterText}>Filtrer</Text>
+            </TouchableOpacity>
           </View>
           <ScrollView style={styles.scrollView}>
             {events && events.map(event => 

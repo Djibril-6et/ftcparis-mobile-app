@@ -70,7 +70,7 @@ export const getStyles = (isDarkTheme: boolean) =>
             height: 40,
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
             alignSelf: 'center',
             marginBottom: 20,
         },
@@ -81,6 +81,14 @@ export const getStyles = (isDarkTheme: boolean) =>
             height: '100%',
             width: '30%',
             borderRadius: 15,
+        },
+
+        filterText: {
+            color: isDarkTheme ? '#000' : '#fff',
+            fontWeight: 'bold',
+            fontSize: 16,
+            textAlign: 'center',
+            lineHeight: 40,
         },
 
         scrollView: {
