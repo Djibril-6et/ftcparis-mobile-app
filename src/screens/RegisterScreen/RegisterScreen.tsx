@@ -59,6 +59,16 @@ export default function RegisterScreen() {
             value={username}
             onChangeText={setUsername}
           />
+          
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={isDark ? "#aaa" : "#555"}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
 
           <TextInput
             style={styles.input}
@@ -76,7 +86,7 @@ export default function RegisterScreen() {
             onChangeText={setLastname}
           />
 
-          {/* Sélecteur de date */}
+          {/* Date picker */}
           <TouchableOpacity
             style={styles.input}
             onPress={() => setDatePickerVisibility(true)}
@@ -90,20 +100,11 @@ export default function RegisterScreen() {
             isVisible={isDatePickerVisible}
             mode="date"
             date={birthdate}
-            onConfirm={(date) => handleConfirm(date)} // Utilisez le paramètre 'date'
+            onConfirm={(date) => handleConfirm(date)}
             onCancel={() => setDatePickerVisibility(false)}
             maximumDate={new Date()}
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor={isDark ? "#aaa" : "#555"}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
 
           <TextInput
             style={styles.input}

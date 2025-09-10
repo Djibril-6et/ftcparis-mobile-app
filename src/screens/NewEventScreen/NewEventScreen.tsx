@@ -50,8 +50,6 @@ export default function NewEventScreen() {
           name: pickedFile.name || 'image.jpg',
           size: pickedFile.size || undefined
         });
-        
-        console.log('Image sélectionnée:', pickedFile);
       }
     } catch (err: any) {
       console.log('Erreur sélection image:', err);
@@ -60,14 +58,18 @@ export default function NewEventScreen() {
   };
 
   const handleCreateEvent = async () => {
-    // Validation basique
-    if (!title.trim()) {
-      Alert.alert("Erreur", "Le titre est obligatoire");
+    if (!title.trim() || !keywords.trim() || !place.trim() || !instagram.trim()) {
+      Alert.alert("Attention", "Veuiillez remplir tous les champs");
       return;
     }
 
     if (!datetime) {
-      Alert.alert("Erreur", "La date et l'heure sont obligatoires");
+      Alert.alert("Attention", "La date et l'heure sont obligatoires");
+      return;
+    }
+
+    if (!selectedImage) {
+      Alert.alert("Erreur", "Veuillez sélectionner une image pour l'événement");
       return;
     }
 
@@ -83,7 +85,7 @@ export default function NewEventScreen() {
         selectedImage || undefined
       );
 
-      // Nettoyer le fichier temporaire après l'upload réussi
+      // Cleen up temporary file after upload
       if (selectedImage && selectedImage.uri.startsWith('file://')) {
         try {
           await RNFS.unlink(selectedImage.uri.replace('file://', ''));
@@ -113,7 +115,7 @@ export default function NewEventScreen() {
         <View style={styles.container}>
           <Text style={styles.title}>Nouvel Événement</Text>
 
-          {/* Bouton de sélection d'image */}
+          {/* Image button */}
           <TouchableOpacity 
             style={[styles.button, { marginBottom: 10, backgroundColor: '#007bff' }]}
             onPress={handleImagePicker}
@@ -123,7 +125,7 @@ export default function NewEventScreen() {
             </Text>
           </TouchableOpacity>
 
-          {/* Prévisualisation de l'image */}
+          {/* Image preview */}
           {selectedImage && (
             <View style={{ alignItems: 'center', marginBottom: 15 }}>
               <Image 

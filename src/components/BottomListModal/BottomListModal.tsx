@@ -1,7 +1,7 @@
 import React, { use, useEffect } from 'react';
 import { useThemeContext } from '../../context/ThemeContext';
 import { getStyles } from './BottomListModal.styles';
-import { View, Text, Pressable, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable, FlatList, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 import EventCard from '../EventCard/EventCard';
 import { useAuth } from '../../context/AuthContext';
@@ -25,8 +25,6 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
     const fetchEvents = async () => {
       try {
         const response = await getEvents();
-        console.log("Full response:", response);
-        // Si les données sont dans response._j
         const eventsData = response._j || response;
         setEvents(eventsData);
       } catch (err) {
@@ -35,13 +33,11 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
     };
     
     fetchEvents();
-  }, []);
+  }, [visible]);
 
   const {user} = useAuth();
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-  // const events = eventsData;
 
   return (
     <>
@@ -83,11 +79,23 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
               <Text style={styles.filterText}>Filtrer</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView style={styles.scrollView}>
-            {events && events.map(event => 
-              <EventCard event={event} key={event.title} />
-            )}
-          </ScrollView>
+          <FlatList
+            data={events}
+            renderItem={({ item }) => <EventCard event={item} />}
+            keyExtractor={(item) => item._id}
+            style={styles.scrollView}
+            initialNumToRender={4}
+            maxToRenderPerBatch={3}
+            windowSize={7}
+            removeClippedSubviews={true}
+            onEndReachedThreshold={0.5}
+            onEndReached={() => console.log('Fin de liste atteinte')}
+            getItemLayout={(data, index) => ({
+              length: 130,
+              offset: 130 * index, 
+              index,
+            })}
+          />
         </View>
       </Modal>
     </>

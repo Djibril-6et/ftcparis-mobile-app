@@ -3,11 +3,26 @@ import Config from "react-native-config";
 
 const API_URL = Config.API_URL;
 
-// Get token (même fonction que dans Auth.services)
+// Get token
 export async function getToken(): Promise<string | null> {
   const creds = await Keychain.getGenericPassword();
   return creds ? creds.password : null;
 }
+
+// Function to duplicate events for testing lazy loading in dev mode
+const duplicateEventsForTesting = (events: any[]): any[] => {
+  const duplicated: any[] = [];
+  for (let i = 0; i < 10; i++) { // Créer 10 copies de chaque événement
+    events.forEach(event => {
+      duplicated.push({
+        ...event,
+        _id: `${event._id}-copy-${i}`,
+        title: `${event.title} (Test ${i + 1})`
+      });
+    });
+  }
+  return duplicated;
+};
 
 // ---- Get all events ----
 export async function getEvents() {
@@ -24,7 +39,21 @@ export async function getEvents() {
   }
 
   const data = await res.json();
-  return data;
+  
+  // Add thumbnail query param to image URLs to optimize loading
+  let eventsWithThumbs = data.map((event: any) => ({
+    ...event,
+    imageUrl: event.image ? `${API_URL}/images/${event.image}?thumb=true` : null,
+    fullImageUrl: event.image ? `${API_URL}/images/${event.image}` : null
+  }));
+
+  // In dev mode, duplicate events to test lazy loading
+  if (__DEV__) {
+    eventsWithThumbs = duplicateEventsForTesting(eventsWithThumbs);
+    console.log(`🔄 Mode dev: ${eventsWithThumbs.length} événements générés pour test lazy loading`);
+  }
+  
+  return eventsWithThumbs;
 }
 
 // ---- Get event by ID ----
@@ -64,7 +93,6 @@ export async function createEvent(
   const token = await getToken();
   if (!token) throw new Error("Token d'authentification manquant");
 
-  // Création du FormData pour l'upload multipart
   const formData = new FormData();
   
   formData.append('title', title);
@@ -72,9 +100,8 @@ export async function createEvent(
   formData.append('datetime', datetime);
   formData.append('place', place);
   formData.append('instagram', instagram);
-  // Le creatorId sera automatiquement ajouté côté backend via req.user._id (middleware protect)
   
-  // Ajouter l'image si présente
+  // Add image if provided
   if (imageFile) {
     formData.append('image', {
       uri: imageFile.uri,
