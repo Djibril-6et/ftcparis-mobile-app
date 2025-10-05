@@ -116,6 +116,7 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
           renderItem={({ item }: { item: Event }) => <EventCard event={item} />}
           keyExtractor={(item: Event) => item._id}
           contentContainerStyle={{ paddingBottom: 20 }}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </BottomSheet>
