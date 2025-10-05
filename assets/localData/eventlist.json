@@ -1,0 +1,82 @@
+[
+  {
+    "image": "actionreplay.jpg",
+    "title": "Action Replay",
+    "keywords": ["Dj-Set", "Block Party"],
+    "datetime": "2025-06-21T18:00:00Z",
+    "place": "18 rue Bourg Tibourg, 75004 Paris",
+    "instagram": "@actionr3play",
+    "latitude": 48.857398,
+    "longitude": 2.356270
+  },
+  {
+    "image": "sixtion.jpg",
+    "title": "SIXTION X RECESS X EVERYDAY PEOPLE",
+    "keywords": ["DJ Sets", "Live Music", "Food", "Hip-Hop"],
+    "datetime": "2025-06-21T16:00:00Z",
+    "place": "211 Avenue Jean Jaurès, 75019 Paris",
+    "instagram": "@sixtionevents",
+    "latitude": 48.888950,
+    "longitude": 2.392440
+  },
+  {
+    "image": "louvre.jpg",
+    "title": "Jardin du Louvre",
+    "keywords": ["Plein Air", "Variété"],
+    "datetime": "2025-06-21T23:00:00Z",
+    "place": "Rue de Rivoli, 75001 Paris",
+    "instagram": "@france_music_week",
+    "latitude": 48.862728,
+    "longitude": 2.334796
+  },
+  {
+    "image": "propaganda.jpg",
+    "title": "Propaganda The After Party",
+    "keywords": ["Dj-Set", "After-Party"],
+    "datetime": "2025-06-22T00:00:00Z",
+    "place": "50 Boulevard de Clichy, 75018 Paris",
+    "instagram": "@222.feelings",
+    "latitude": 48.883202,
+    "longitude": 2.335321
+  },
+  {
+    "image": "sssound.jpg",
+    "title": "SSSound - Free The Youth",
+    "keywords": ["Dj-Set", "After-Party", "Afro"],
+    "datetime": "2025-06-22T00:00:00Z",
+    "place": "211 Avenue Jean Jaurès, 75019 Paris",
+    "instagram": "@sssound__",
+    "latitude": 48.888950,
+    "longitude": 2.392440
+  },
+  {
+    "image": "stoneatne.jpg",
+    "title": "Stone & Atne",
+    "keywords": ["Dj-Set", "Trap", "New Wave", "Shatta", "R&B", "Afro"],
+    "datetime": "2025-06-21T15:00:00Z",
+    "place": "50 Boulevard de Clichy, 75018 Paris",
+    "instagram": "@atne.aw",
+    "latitude": 48.883202,
+    "longitude": 2.335321
+  },
+  {
+    "image": "spiritualgangsta.jpg",
+    "title": "SPIRITUAL GANGSTA x AMALUNA",
+    "keywords": ["Block Party", "Dj-Sets", "Live", "Afrobeats", "Rap", "Afro", "Rob", "Bailefunk", "Amapiano", "Bouyon"],
+    "datetime": "2025-06-21T16:00:00Z",
+    "place": "Esplanade Nathalie Sarraute, 75018 Paris",
+    "instagram": "@spiritualgangsta._",
+    "latitude": 48.889915,
+    "longitude": 2.382522
+  },
+  {
+    "image": "sns.jpg",
+    "title": "SNS Paris fête la musique",
+    "keywords": ["Baile Funk", "Soulful - Deep House", "Afro House", "Electro", "R&B", "Rap"],
+    "datetime": "2025-06-21T13:00:00Z",
+    "place": "95 rue Réaumur, 75002 Paris",
+    "instagram": "@sneakersnstuff.paris",
+    "latitude": 48.867129,
+    "longitude": 2.348585
+  }
+]
