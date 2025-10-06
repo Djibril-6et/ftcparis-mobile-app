@@ -11,8 +11,8 @@ const icons = {
 };
 
 const SearchBar = () => {
-  const { isDark } = useThemeContext();
-  const styles = getStyles(isDark);
+  const { isDark, colors } = useThemeContext();
+  const styles = getStyles(colors);
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [searchText, setSearchText] = useState('');

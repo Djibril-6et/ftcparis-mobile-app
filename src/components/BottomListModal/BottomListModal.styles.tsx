@@ -1,10 +1,11 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../context/ThemeContext';
 
-export const getStyles = (isDarkTheme: boolean) =>
+export const getStyles = (color: Colors) =>
   StyleSheet.create({
     content: {
       flex: 1,
-      backgroundColor: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
+      // backgroundColor: color.background,
       padding: 15,
     },
 
@@ -18,7 +19,7 @@ export const getStyles = (isDarkTheme: boolean) =>
     title: {
       maxWidth: '100%',
       maxHeight: '100%',
-      color: isDarkTheme ? '#fff' : '#000',
+      color: color.text,
       fontFamily: 'ArchivoBlack-Regular',
       fontSize: 20,
       fontWeight: 'bold',
@@ -39,14 +40,14 @@ export const getStyles = (isDarkTheme: boolean) =>
 
     filterItem: {
       display: 'flex',
-      backgroundColor: isDarkTheme ? '#f5f5f5' : '#1a1a1a',
+      backgroundColor: color.buttonBackground,
       height: '100%',
       width: '30%',
       borderRadius: 15,
     },
 
     filterText: {
-      color: isDarkTheme ? '#000' : '#fff',
+      color: color.buttonText,
       fontWeight: 'bold',
       fontSize: 16,
       textAlign: 'center',

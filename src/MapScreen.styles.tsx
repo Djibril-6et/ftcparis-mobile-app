@@ -1,19 +1,20 @@
 import { StyleSheet } from 'react-native';
+import type { Colors } from './context/ThemeContext';
 
-export const getStyles = (isDarkTheme: boolean) =>
+export const getStyles = (color: Colors) =>
   StyleSheet.create({
     container: {
       ...StyleSheet.absoluteFillObject,
       justifyContent: 'flex-end',
       alignItems: 'center',
-      backgroundColor: isDarkTheme ? '#121212' : '#fff',
+      backgroundColor: color.background,
     },
 
     loadingContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: isDarkTheme ? '#121212' : '#fff',
+      backgroundColor: color.background,
     },
     
     map: {
@@ -46,8 +47,8 @@ export const getStyles = (isDarkTheme: boolean) =>
       width: '15%',
       height: 40,
       borderRadius: 20,
-      backgroundColor: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
-      borderColor: isDarkTheme ? '#f5f5f5' : '#1a1a1a',
+      backgroundColor: color.background,
+      borderColor: color.border,
       borderWidth: 0.5,
       justifyContent: 'center',
       alignItems: 'center',

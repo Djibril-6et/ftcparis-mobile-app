@@ -1,15 +1,16 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../context/ThemeContext';
 
-export const getStyles = (isDarkTheme: boolean) =>
+export const getStyles = (color: Colors) =>
   StyleSheet.create({
     container: {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
+      backgroundColor: color.surface,
       borderRadius: 20,
-      borderWidth: 0.5,
-      borderColor: isDarkTheme ? '#f5f5f5' : '#1a1a1a',
+      borderWidth: 0.2,
+      borderColor: color.border,
       paddingHorizontal: 10,
       paddingVertical: 5,
       width: '80%',
@@ -19,7 +20,7 @@ export const getStyles = (isDarkTheme: boolean) =>
     input: {
       flex: 1,
       width: '70%',
-      color: isDarkTheme ? '#fff' : '#000',
+      color: color.text,
       fontSize: 16,
       padding: 0,
       marginLeft: 10,

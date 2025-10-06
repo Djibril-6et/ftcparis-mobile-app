@@ -1,25 +1,26 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "../../context/ThemeContext";
 
-export const getStyles = (isDark: boolean) =>
+export const getStyles = (color: Colors) =>
   StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: isDark ? "#121212" : "#fff",
+      backgroundColor: color.background,
       padding: 20,
     },
     title: {
       fontSize: 28,
       fontWeight: "bold",
       marginBottom: 30,
-      color: isDark ? "#fff" : "#000",
+      color: color.text,
     },
     input: {
       width: "100%",
       height: 50,
       borderWidth: 1,
-      borderColor: isDark ? "#555" : "#ccc",
+      borderColor: color.border,
       borderRadius: 10,
       paddingHorizontal: 15,
       justifyContent: "center",
@@ -44,7 +45,7 @@ export const getStyles = (isDark: boolean) =>
     },
     
     spanLinkText: {
-      color: "#e63946",
+      color: "#ff0000",
       fontWeight: "bold",
     },
   });

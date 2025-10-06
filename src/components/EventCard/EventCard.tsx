@@ -17,8 +17,8 @@ type Props = {
 };
 
 const EventCard = ({ event }: Props) => {
-    const { isDark } = useThemeContext();
-    const styles = getStyles(isDark);
+    const { isDark, colors } = useThemeContext();
+    const styles = getStyles(colors);
     const [imageLoading, setImageLoading] = useState(true);
     const [imageError, setImageError] = useState(false);
 
@@ -106,8 +106,8 @@ const EventCard = ({ event }: Props) => {
                     <Image
                         style={styles.locationIcon}
                         source={isDark
-                            ? require('../../../assets/images/icons/location-black.png')
-                            : require('../../../assets/images/icons/location-white.png')}
+                            ? require('../../../assets/images/icons/location-white.png')
+                            : require('../../../assets/images/icons/location-black.png')}
                     />
                     {" "}{event.place}
                 </Text>

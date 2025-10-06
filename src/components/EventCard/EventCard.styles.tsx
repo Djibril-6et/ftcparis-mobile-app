@@ -1,16 +1,24 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../context/ThemeContext';
 
-export const getStyles = (isDarkTheme: boolean) =>
+export const getStyles = (color: Colors) =>
     StyleSheet.create({ 
 
         wrapper: {
-            backgroundColor: isDarkTheme ? '#f5f5f5' : '#1a1a1a',
+            backgroundColor: color.background,
             width: '100%',
             height: 130,
             display: 'flex',
             flexDirection: 'row',
             marginBottom: 25,
             borderRadius: 15,
+            borderWidth: 0.1,
+            borderColor: color.border,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 1,
+            elevation: 4,
         },
 
         imageWrapper: {
@@ -18,7 +26,6 @@ export const getStyles = (isDarkTheme: boolean) =>
             height: '100%',
             borderRadius: 15,
             overflow: 'hidden',
-            backgroundColor: '#ff0000',
             justifyContent: 'center',
             alignItems: 'center',
         },
@@ -40,20 +47,20 @@ export const getStyles = (isDarkTheme: boolean) =>
 
         date: {
             height: '20%',
-            color: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
+            color: color.text,
             fontSize: 12,
         },
 
         title: {
             height: '20%',
-            color: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
+            color: color.text,
             fontSize: 12,
             fontWeight: 'bold',
         },
 
         place: {
             height: '20%',
-            color: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
+            color: color.text,
             fontSize: 12,
         },
 
@@ -71,7 +78,7 @@ export const getStyles = (isDarkTheme: boolean) =>
         },
 
         keywordView: {
-            backgroundColor: '#2C2C2C',
+            backgroundColor: color.buttonBackground,
             marginRight: 5,  
             paddingHorizontal: 6,
             borderRadius: 6,
@@ -93,7 +100,7 @@ export const getStyles = (isDarkTheme: boolean) =>
         },
 
         keywordText: {
-            color: isDarkTheme ? '#1a1a1a' : '#f5f5f5',
+            color: color.buttonText,
             fontSize: 12,
             flexShrink: 1,
             flexWrap: 'wrap', 

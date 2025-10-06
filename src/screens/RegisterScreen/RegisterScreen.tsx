@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useThemeContext } from "../../context/ThemeContext";
-import { getStyles } from "./RegisterScreen.styles";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../../navigation/AppNavigator";
-import { useAuth } from "../../context/AuthContext";
+import React, { useState } from "react";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from "../../context/AuthContext";
+import { useThemeContext } from "../../context/ThemeContext";
+import type { RootStackParamList } from "../../navigation/AppNavigator";
+import { getStyles } from "./RegisterScreen.styles";
 
 export default function RegisterScreen() {
-  const { isDark } = useThemeContext();
-  const styles = getStyles(isDark);
+  const { isDark, colors } = useThemeContext();
+  const styles = getStyles(colors);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [username, setUsername] = useState("");

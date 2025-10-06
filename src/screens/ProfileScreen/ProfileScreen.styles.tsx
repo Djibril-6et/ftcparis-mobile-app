@@ -1,27 +1,28 @@
 import { StyleSheet } from "react-native";
+import type { Colors } from "../../context/ThemeContext";
 
-export const getStyles = (isDark: boolean) =>
+export const getStyles = (color: Colors) =>
   StyleSheet.create({
     container: {
       flex: 1,
       padding: 20,
-      backgroundColor: isDark ? "#121212" : "#fff",
+      backgroundColor: color.background,
     },
     title: {
       fontSize: 28,
       fontWeight: "bold",
       marginBottom: 30,
-      color: isDark ? "#fff" : "#000",
+      color: color.text,
       textAlign: "center",
     },
     center: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: isDark ? "#121212" : "#fff",
+      backgroundColor: color.background,
     },
     errorText: {
-      color: isDark ? "#fff" : "#000",
+      color: color.error,
       fontSize: 16,
     },
     profileInfo: {
@@ -31,13 +32,13 @@ export const getStyles = (isDark: boolean) =>
     label: {
       fontSize: 16,
       fontWeight: "bold",
-      color: isDark ? "#fff" : "#000",
+      color: color.text,
       marginTop: 15,
       marginBottom: 5,
     },
     value: {
       fontSize: 16,
-      color: isDark ? "#ccc" : "#555",
+      color: color.textSecondary,
       marginBottom: 10,
       paddingLeft: 10,
     },

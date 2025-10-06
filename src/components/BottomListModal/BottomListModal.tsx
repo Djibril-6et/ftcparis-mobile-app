@@ -30,8 +30,8 @@ type Props = {
 };
 
 const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
-  const { isDark } = useThemeContext();
-  const styles = getStyles(isDark);
+  const { isDark, colors } = useThemeContext();
+  const styles = getStyles(colors);
   const [events, setEvents] = React.useState<Event[]>([]);
   
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -73,7 +73,7 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
       enableDynamicSizing={false}
       overDragResistanceFactor={0}
       animationConfigs={{
-        duration: 250,
+        duration: 400,
       }}
       onChange={(index) => {
         if (index === 0) {
@@ -82,11 +82,22 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
           onOpen();
         }
       }}
+      style={{
+        shadowColor: colors.text,
+        shadowOffset: {
+          width: 0,
+          height: -8,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        elevation: 10, // for Android shadow
+      }}
       backgroundStyle={{
-        backgroundColor: isDark ? '#1a1a1a' : '#ffffff',
+        backgroundColor: colors.surface,
       }}
       handleIndicatorStyle={{
-        backgroundColor: isDark ? '#fff' : '#000',
+        backgroundColor: colors.border,
+        width: 60,
       }}
     >
       <View style={styles.content}>
@@ -117,6 +128,10 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
           keyExtractor={(item: Event) => item._id}
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
+          decelerationRate="normal"
+          maintainVisibleContentPosition={{
+            minIndexForVisible: 0,
+          }}
         />
       </View>
     </BottomSheet>

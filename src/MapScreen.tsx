@@ -3,7 +3,6 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   Image,
   Linking,
@@ -16,6 +15,7 @@ import { Marker } from 'react-native-maps';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { getStyles } from './MapScreen.styles';
 import BottomListModal from './components/BottomListModal/BottomListModal';
+import LoadingComponent from "./components/LoadingComponent/LoadingComponent";
 import SearchBar from './components/searchBar/searchBar';
 import { useAuth } from './context/AuthContext';
 import { useThemeContext } from './context/ThemeContext';
@@ -28,9 +28,10 @@ type LatLng = {
 };
 
 export default function MapScreen() {
-  const { isDark } = useThemeContext();
-  const styles = getStyles(isDark);
+  const { isDark, colors } = useThemeContext();
+  const styles = getStyles(colors);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const testLoading = true;
 
   const [region, setRegion] = useState({
     latitude: 48.8566,
@@ -150,9 +151,7 @@ export default function MapScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <LoadingComponent visible={loading} />
     );
   }
 

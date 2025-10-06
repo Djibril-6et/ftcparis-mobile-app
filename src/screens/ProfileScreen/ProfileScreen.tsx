@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
-import { getProfile, getToken } from "../../services/Auth.services";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../../navigation/AppNavigator";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from "../../context/AuthContext";
 import { useThemeContext } from "../../context/ThemeContext";
+import type { RootStackParamList } from "../../navigation/AppNavigator";
+import { getProfile, getToken } from "../../services/Auth.services";
 import { getStyles } from "./ProfileScreen.styles";
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
-  const { isDark } = useThemeContext();
-  const styles = getStyles(isDark);
+  const { isDark, colors } = useThemeContext();
+  const styles = getStyles(colors);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { logout: loginContext } = useAuth();
