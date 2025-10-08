@@ -11,7 +11,8 @@ export default {
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     extra: {
-      apiUrl: process.env.API_URL, // ⬅️ Lecture depuis .env
+      apiUrl: process.env.API_URL,
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     },
     ios: {
       supportsTablet: true,

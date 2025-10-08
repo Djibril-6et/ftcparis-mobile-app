@@ -49,19 +49,21 @@ export const getStyles = (color: Colors) =>
             height: '20%',
             color: color.text,
             fontSize: 12,
+            fontFamily: 'InriaSerif-Light',
         },
 
         title: {
-            height: '20%',
+            height: '25%',
             color: color.text,
-            fontSize: 12,
-            fontWeight: 'bold',
+            fontSize: 16,
+            fontFamily: 'Anton-Regular',
         },
 
         place: {
             height: '20%',
             color: color.text,
             fontSize: 12,
+            fontFamily: 'InriaSerif-Light',
         },
 
         locationIcon: {

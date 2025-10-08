@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import {
@@ -60,6 +61,7 @@ export default function MapScreen() {
   const [events, setEvents] = useState<Event[]>([]);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [routeCoordinates, setRouteCoordinates] = useState<LatLng[]>([]);
 
   const { user } = useAuth();
 
@@ -160,13 +162,110 @@ export default function MapScreen() {
     }
   };
 
-  const handleMarkerPress = (event: Event) => {
+  const handleMarkerPress = async (event: Event) => {
+    console.log('🎯 Marqueur cliqué:', event.title);
     setSelectedEvent(event);
     setModalVisible(false);
+    
+    // Récupérer l'itinéraire si on a la position de l'utilisateur et de l'événement
+    if (userLocation && event.latitude && event.longitude) {
+      console.log('🚀 Lancement getDirections...');
+      await getDirections(
+        userLocation,
+        { latitude: event.latitude, longitude: event.longitude }
+      );
+    } else {
+      console.log('⚠️ Pas de position utilisateur ou événement');
+    }
+  };
+
+  const getDirections = async (origin: LatLng, destination: LatLng) => {
+    try {
+      const GOOGLE_API_KEY = Constants.expoConfig?.extra?.googleMapsApiKey;
+      
+      console.log('🔑 Clé API:', GOOGLE_API_KEY ? 'Trouvée' : 'Non trouvée');
+      console.log('📍 Origine:', origin);
+      console.log('📍 Destination:', destination);
+      
+      if (!GOOGLE_API_KEY) {
+        console.error('❌ Clé API Google Maps non trouvée');
+        // Fallback: ligne droite
+        setRouteCoordinates([origin, destination]);
+        return;
+      }
+      
+      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=${GOOGLE_API_KEY}`;
+      
+      console.log('🗺️ Appel API Directions...');
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      console.log('📦 Statut réponse:', data.status);
+      
+      if (data.status === 'OK' && data.routes.length > 0) {
+        const points = data.routes[0].overview_polyline.points;
+        const decodedPoints = decodePolyline(points);
+        console.log(`✅ Itinéraire trouvé avec ${decodedPoints.length} points`);
+        console.log('🎯 Premiers points:', decodedPoints.slice(0, 3));
+        setRouteCoordinates(decodedPoints);
+      } else {
+        console.warn('⚠️ Pas d\'itinéraire:', data.status);
+        if (data.error_message) {
+          console.error('💥 Erreur API:', data.error_message);
+        }
+        // Fallback: ligne droite
+        console.log('➡️ Fallback: ligne droite');
+        setRouteCoordinates([origin, destination]);
+      }
+    } catch (error) {
+      console.error('❌ Erreur fetch:', error);
+      // Fallback: ligne droite
+      setRouteCoordinates([origin, destination]);
+    }
+  };
+
+  // Fonction pour décoder la polyline Google
+  const decodePolyline = (encoded: string): LatLng[] => {
+    const poly: LatLng[] = [];
+    let index = 0;
+    const len = encoded.length;
+    let lat = 0;
+    let lng = 0;
+
+    while (index < len) {
+      let b;
+      let shift = 0;
+      let result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlat = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlng = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
+      lng += dlng;
+
+      poly.push({
+        latitude: lat / 1e5,
+        longitude: lng / 1e5,
+      });
+    }
+
+    return poly;
   };
 
   const handleCloseEventCard = () => {
     setSelectedEvent(null);
+    setRouteCoordinates([]);
   };
 
   useEffect(() => {
@@ -212,37 +311,19 @@ export default function MapScreen() {
                       latitude: event.latitude, 
                       longitude: event.longitude 
                     }}
-                    title={event.title}
-                    description={event.place}
                     onPress={() => handleMarkerPress(event)}
                   />
                 );
               })
             }
 
-            {(() => {
-              if (
-                selectedEvent && 
-                userLocation && 
-                typeof selectedEvent.latitude === 'number' && 
-                typeof selectedEvent.longitude === 'number'
-              ) {
-                const eventCoordinate: LatLng = {
-                  latitude: selectedEvent.latitude,
-                  longitude: selectedEvent.longitude
-                };
-                
-                return (
-                  <Polyline
-                    coordinates={[userLocation, eventCoordinate]}
-                    strokeColor={isDark ? "#ff6b6b" : "#ff0000"}
-                    strokeWidth={3}
-                    lineDashPattern={[10, 5]}
-                  />
-                );
-              }
-              return null;
-            })()}
+            {routeCoordinates.length > 0 && (
+              <Polyline
+                coordinates={routeCoordinates}
+                strokeColor={isDark ? "#4A90E2" : "#007AFF"}
+                strokeWidth={4}
+              />
+            )}
           </MapCluster>
 
           {permissionDenied && (
