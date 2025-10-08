@@ -4,9 +4,9 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
+import { useEvents } from '../../context/EventContext';
 import { useThemeContext } from '../../context/ThemeContext';
 import type { RootStackParamList } from "../../navigation/AppNavigator";
-import { getEvents } from '../../services/Event.services';
 import EventCard from '../EventCard/EventCard';
 import { getStyles } from './BottomListModal.styles';
 
@@ -32,24 +32,16 @@ type Props = {
 const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
   const { isDark, colors } = useThemeContext();
   const styles = getStyles(colors);
-  const [events, setEvents] = React.useState<Event[]>([]);
+  const { user } = useAuth();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  
+  // Utiliser le context au lieu de l'état local
+  const { events } = useEvents();
   
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['10%', '40%', '60%', '90%'], []);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await getEvents();
-        const eventsData = response._j || response;
-        setEvents(eventsData);
-      } catch (err) {
-        console.log("Error fetching events:", err);
-      }
-    };
-    
-    fetchEvents();
-  }, []);
+  // Plus besoin de fetchEvents ici, c'est géré par le context
 
   useEffect(() => {
     if (visible) {
@@ -58,9 +50,6 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
       bottomSheetRef.current?.snapToIndex(0);
     }
   }, [visible]);
-
-  const { user } = useAuth();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <BottomSheet
@@ -90,7 +79,7 @@ const BottomListModal = ({ visible, onOpen, onClose }: Props) => {
         },
         shadowOpacity: 0.3,
         shadowRadius: 2,
-        elevation: 10, // for Android shadow
+        elevation: 10,
       }}
       backgroundStyle={{
         backgroundColor: colors.surface,

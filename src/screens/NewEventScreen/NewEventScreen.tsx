@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useEvents } from "../../context/EventContext";
 import { useThemeContext } from "../../context/ThemeContext";
 import type { RootStackParamList } from "../../navigation/AppNavigator";
 import { createEvent } from "../../services/Event.services";
@@ -15,6 +16,9 @@ export default function NewEventScreen() {
   const { isDark } = useThemeContext();
   const styles = getStyles(isDark);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  
+  // Utiliser le context pour rafraîchir les événements
+  const { refreshEvents } = useEvents();
 
   const [selectedImage, setSelectedImage] = useState<{
     uri: string;
@@ -59,7 +63,7 @@ export default function NewEventScreen() {
 
   const handleCreateEvent = async () => {
     if (!title.trim() || !keywords.trim() || !place.trim() || !instagram.trim()) {
-      Alert.alert("Attention", "Veuiillez remplir tous les champs");
+      Alert.alert("Attention", "Veuillez remplir tous les champs");
       return;
     }
 
@@ -93,6 +97,10 @@ export default function NewEventScreen() {
           console.log('Erreur nettoyage fichier:', cleanupErr);
         }
       }
+
+      // Rafraîchir les événements dans le context
+      console.log('🔄 Rafraîchissement des événements après création...');
+      await refreshEvents();
 
       Alert.alert("Succès", "Événement créé avec succès !", [
         {

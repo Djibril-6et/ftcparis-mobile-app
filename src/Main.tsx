@@ -3,6 +3,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import useFonts from '../hooks/useFonts';
 import { AuthProvider } from "./context/AuthContext";
+import { EventProvider } from "./context/EventContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import AppNavigator from "./navigation/AppNavigator";
 
@@ -21,7 +22,9 @@ export default function Main() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
         <AuthProvider>
-          <AppNavigator />
+          <EventProvider>
+            <AppNavigator />
+          </EventProvider>
         </AuthProvider>
       </ThemeProvider>
     </GestureHandlerRootView>

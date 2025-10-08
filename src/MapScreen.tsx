@@ -20,9 +20,9 @@ import EventCard from './components/EventCard/EventCard';
 import LoadingComponent from "./components/LoadingComponent/LoadingComponent";
 import SearchBar from './components/searchBar/searchBar';
 import { useAuth } from './context/AuthContext';
+import { useEvents } from './context/EventContext';
 import { useThemeContext } from './context/ThemeContext';
 import type { RootStackParamList } from "./navigation/AppNavigator";
-import { getEvents } from './services/Event.services';
 
 type LatLng = {
   latitude: number;
@@ -46,7 +46,10 @@ export default function MapScreen() {
   const { isDark, colors } = useThemeContext();
   const styles = getStyles(colors);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const testLoading = true;
+  const { user } = useAuth();
+  
+  // Utiliser le context au lieu de l'état local
+  const { events } = useEvents();
 
   const [region, setRegion] = useState({
     latitude: 48.8566,
@@ -58,29 +61,11 @@ export default function MapScreen() {
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [events, setEvents] = useState<Event[]>([]);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<LatLng[]>([]);
 
-  const { user } = useAuth();
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        console.log('📡 Chargement des événements pour la carte...');
-        const response = await getEvents();
-        const eventsData = response._j || response;
-        console.log(`✅ ${eventsData.length} événements chargés`);
-        setEvents(eventsData);
-      } catch (err) {
-        console.error("❌ Error fetching events:", err);
-        setEvents([]);
-      }
-    };
-    
-    fetchEvents();
-  }, []);
+  // Plus besoin de fetchEvents ici, c'est géré par le context
 
   const requestLocationPermission = async () => {
     try {
@@ -167,7 +152,6 @@ export default function MapScreen() {
     setSelectedEvent(event);
     setModalVisible(false);
     
-    // Récupérer l'itinéraire si on a la position de l'utilisateur et de l'événement
     if (userLocation && event.latitude && event.longitude) {
       console.log('🚀 Lancement getDirections...');
       await getDirections(
@@ -189,7 +173,6 @@ export default function MapScreen() {
       
       if (!GOOGLE_API_KEY) {
         console.error('❌ Clé API Google Maps non trouvée');
-        // Fallback: ligne droite
         setRouteCoordinates([origin, destination]);
         return;
       }
@@ -213,18 +196,15 @@ export default function MapScreen() {
         if (data.error_message) {
           console.error('💥 Erreur API:', data.error_message);
         }
-        // Fallback: ligne droite
         console.log('➡️ Fallback: ligne droite');
         setRouteCoordinates([origin, destination]);
       }
     } catch (error) {
       console.error('❌ Erreur fetch:', error);
-      // Fallback: ligne droite
       setRouteCoordinates([origin, destination]);
     }
   };
 
-  // Fonction pour décoder la polyline Google
   const decodePolyline = (encoded: string): LatLng[] => {
     const poly: LatLng[] = [];
     let index = 0;
@@ -299,7 +279,6 @@ export default function MapScreen() {
             {events
               .filter(event => event.geocoded && event.latitude && event.longitude)
               .map((event) => {
-                // TypeScript narrowing: après le filter, on sait que latitude et longitude existent
                 if (event.latitude === undefined || event.longitude === undefined) {
                   return null;
                 }
