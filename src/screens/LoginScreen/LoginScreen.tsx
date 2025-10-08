@@ -22,7 +22,6 @@ export default function LoginScreen() {
     try {
       setLoading(true);
       await loginContext(identifier, password); // update the context
-      Alert.alert("Succès", "Connexion réussie !");
     } catch (err: any) {
       Alert.alert("Erreur", err.message || "Impossible de se connecter");
     } finally {

@@ -14,9 +14,10 @@ type Props = {
     keywords: string[];
     imageUrl?: string;
   };
+  transparent?: boolean;
 };
 
-const EventCard = ({ event }: Props) => {
+const EventCard = ({ event, transparent = false }: Props) => {
     const { isDark, colors } = useThemeContext();
     const styles = getStyles(colors);
     const [imageLoading, setImageLoading] = useState(true);
@@ -45,7 +46,10 @@ const EventCard = ({ event }: Props) => {
                     (event.image ? `${API_URL}/images/${event.image}` : null);
 
     return (
-        <View style={styles.wrapper}>
+        <View style={[
+            styles.wrapper,
+            transparent && { backgroundColor: 'transparent' }
+        ]}>
             <View style={styles.imageWrapper}>
                 {imageUrl ? (
                     <>

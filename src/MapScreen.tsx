@@ -11,10 +11,11 @@ import {
   View
 } from 'react-native';
 import MapCluster from 'react-native-map-clustering';
-import { Marker } from 'react-native-maps';
+import { Marker, Polyline } from 'react-native-maps';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { getStyles } from './MapScreen.styles';
 import BottomListModal from './components/BottomListModal/BottomListModal';
+import EventCard from './components/EventCard/EventCard';
 import LoadingComponent from "./components/LoadingComponent/LoadingComponent";
 import SearchBar from './components/searchBar/searchBar';
 import { useAuth } from './context/AuthContext';
@@ -25,6 +26,19 @@ import { getEvents } from './services/Event.services';
 type LatLng = {
   latitude: number;
   longitude: number;
+};
+
+type Event = {
+  _id: string;
+  title: string;
+  image: string;
+  datetime: string;
+  place: string;
+  keywords: string[];
+  imageUrl?: string;
+  geocoded?: boolean;
+  latitude?: number;
+  longitude?: number;
 };
 
 export default function MapScreen() {
@@ -43,8 +57,9 @@ export default function MapScreen() {
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const { user } = useAuth();
 
@@ -145,6 +160,15 @@ export default function MapScreen() {
     }
   };
 
+  const handleMarkerPress = (event: Event) => {
+    setSelectedEvent(event);
+    setModalVisible(false);
+  };
+
+  const handleCloseEventCard = () => {
+    setSelectedEvent(null);
+  };
+
   useEffect(() => {
     requestLocationPermission();
   }, []);
@@ -175,18 +199,50 @@ export default function MapScreen() {
 
             {events
               .filter(event => event.geocoded && event.latitude && event.longitude)
-              .map((event) => (
-                <Marker
-                  key={event._id}
-                  coordinate={{ 
-                    latitude: event.latitude, 
-                    longitude: event.longitude 
-                  }}
-                  title={event.title}
-                  description={event.place}
-                />
-              ))
+              .map((event) => {
+                // TypeScript narrowing: après le filter, on sait que latitude et longitude existent
+                if (event.latitude === undefined || event.longitude === undefined) {
+                  return null;
+                }
+                
+                return (
+                  <Marker
+                    key={event._id}
+                    coordinate={{ 
+                      latitude: event.latitude, 
+                      longitude: event.longitude 
+                    }}
+                    title={event.title}
+                    description={event.place}
+                    onPress={() => handleMarkerPress(event)}
+                  />
+                );
+              })
             }
+
+            {(() => {
+              if (
+                selectedEvent && 
+                userLocation && 
+                typeof selectedEvent.latitude === 'number' && 
+                typeof selectedEvent.longitude === 'number'
+              ) {
+                const eventCoordinate: LatLng = {
+                  latitude: selectedEvent.latitude,
+                  longitude: selectedEvent.longitude
+                };
+                
+                return (
+                  <Polyline
+                    coordinates={[userLocation, eventCoordinate]}
+                    strokeColor={isDark ? "#ff6b6b" : "#ff0000"}
+                    strokeWidth={3}
+                    lineDashPattern={[10, 5]}
+                  />
+                );
+              }
+              return null;
+            })()}
           </MapCluster>
 
           {permissionDenied && (
@@ -253,31 +309,76 @@ export default function MapScreen() {
               }
               style={styles.topLogo}
             />
-            <View style={styles.searchbarAndAccountWrapper}>
-              <SearchBar />
-              <View style={styles.accountIconWrapper}>
-                <TouchableOpacity 
-                  style={styles.accountIconTouchable} 
-                  onPress={() => navigation.navigate("Profile")}
-                >
-                  <Image
-                    source={
-                      isDark
-                        ? require("../assets/images/icons/profile-white.png")
-                        : require("../assets/images/icons/profile-black.png")
-                    }
-                    style={styles.accountIcon}
-                  />
-                </TouchableOpacity>
+            {!selectedEvent && (
+              <View style={styles.searchbarAndAccountWrapper}>
+                <SearchBar />
+                <View style={styles.accountIconWrapper}>
+                  <TouchableOpacity 
+                    style={styles.accountIconTouchable} 
+                    onPress={() => navigation.navigate("Profile")}
+                  >
+                    <Image
+                      source={
+                        isDark
+                          ? require("../assets/images/icons/profile-white.png")
+                          : require("../assets/images/icons/profile-black.png")
+                      }
+                      style={styles.accountIcon}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            )}
           </View>
 
-          <BottomListModal
-            visible={isModalVisible}
-            onOpen={() => setModalVisible(true)}
-            onClose={() => setModalVisible(false)}
-          />
+          {selectedEvent && (
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                left: 15,
+                right: 15,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                  zIndex: 10,
+                  backgroundColor: colors.background,
+                  borderRadius: 15,
+                  width: 30,
+                  height: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 3,
+                  elevation: 5,
+                }}
+                onPress={handleCloseEventCard}
+              >
+                <Image
+                  source={
+                    isDark
+                      ? require('../assets/images/icons/close-white.png')
+                      : require('../assets/images/icons/close-black.png')
+                  }
+                  style={{ width: 16, height: 16 }}
+                />
+              </TouchableOpacity>
+              <EventCard event={selectedEvent} />
+            </View>
+          )}
+          {!selectedEvent && (
+            <BottomListModal
+              visible={isModalVisible}
+              onOpen={() => setModalVisible(true)}
+              onClose={() => setModalVisible(false)}
+            />
+          )}
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
